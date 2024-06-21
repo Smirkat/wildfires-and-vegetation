@@ -1,0 +1,6 @@
+In the "final" csv file, you will find a table. 
+IMPORTANT INFORMATION:
+latitude/longitude - describe the location for the point being considered
+acq_date - the date on which the hotspot was detected
+frp - "fire radiative power" - high frp = hotter "fire", low frp = cooler "fire"
+NDVI_2000, NDVI_2001, ..., NDVI_2023 - median NDVI over the given year for the given location
