@@ -1,0 +1,16 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+ndvi_data = pd.read_csv('path_to_your_file/Monthly_NDVI.csv')
+
+ndvi_data['year_month'] = pd.to_datetime(ndvi_data['year_month'])
+
+plt.figure(figsize=(12, 6))
+plt.plot(ndvi_data['year_month'], ndvi_data['mean'], marker='o', linestyle='-', color='green')
+plt.title('Monthly NDVI Time Series')
+plt.xlabel('Date')
+plt.ylabel('Mean NDVI')
+plt.xticks(rotation=45)
+plt.grid()
+plt.tight_layout()
+plt.show()
