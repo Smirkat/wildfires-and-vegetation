@@ -1,0 +1,44 @@
+var collection = ee.ImageCollection('MODIS/061/MOD13Q1')
+  .filterDate('2016-10-01', '2016-10-16')
+  .select(['NDVI']);
+
+var meanNdviRoi1 = collection.mean().reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: roi1,
+  scale: 250,
+  maxPixels: 1e13
+});
+
+var meanNdviRoi2 = collection.mean().reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: roi2,
+  scale: 250,
+  maxPixels: 1e13
+});
+
+var meanNdviRoi3 = collection.mean().reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: roi3,
+  scale: 250,
+  maxPixels: 1e13
+});
+
+var meanNdviRoi4 = collection.mean().reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: roi4,
+  scale: 250,
+  maxPixels: 1e13
+});
+
+var meanNdviRoi5 = collection.mean().reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: roi5,
+  scale: 250,
+  maxPixels: 1e13
+});
+
+print('Mean NDVI for ROI1:', meanNdviRoi1);
+print('Mean NDVI for ROI2:', meanNdviRoi2);
+print('Mean NDVI for ROI3:', meanNdviRoi3);
+print('Mean NDVI for ROI4:', meanNdviRoi4);
+print('Mean NDVI for ROI5:', meanNdviRoi5);
