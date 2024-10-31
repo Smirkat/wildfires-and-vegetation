@@ -1,44 +1,43 @@
-var collection = ee.ImageCollection('MODIS/061/MOD13Q1')
-  .filterDate('2016-10-01', '2016-10-16')
-  .select(['NDVI']);
+var firms = ee.FeatureCollection('FIRMS/Active_Fires')
+              .filterDate(startDate, endDate) // pick your own date range
+              .filterBounds(aoi) // Filter by AOI
+              .filter(ee.Filter.gt('confidence', 70));
 
-var meanNdviRoi1 = collection.mean().reduceRegion({
-  reducer: ee.Reducer.mean(),
-  geometry: roi1,
-  scale: 250,
-  maxPixels: 1e13
+var fireCount = firms
+  .reduceRegion({
+    reducer: ee.Reducer.count(),
+    geometry: aoi,
+    scale: 500,
+    maxPixels: 1e13
+  });
+
+print('Total number of fires:', fireCount);
+
+var uniqueYears = firms.aggregate_array('system:time_start')
+  .map(function(date) {
+    return ee.Date(date).get('year');
+  }).distinct();
+
+var fireCountsByYear = uniqueYears.map(function(year) {
+  var yearStr = ee.Number(year).format('%d');
+  var yearlyFires = firms.filter(ee.Filter.calendarRange(year, year, 'year')).size();
+  return ee.Feature(null, {
+    'year': yearStr,
+    'fire_count': yearlyFires
+  });
 });
 
-var meanNdviRoi2 = collection.mean().reduceRegion({
-  reducer: ee.Reducer.mean(),
-  geometry: roi2,
-  scale: 250,
-  maxPixels: 1e13
-});
+var fireCountCollection = ee.FeatureCollection(fireCountsByYear);
 
-var meanNdviRoi3 = collection.mean().reduceRegion({
-  reducer: ee.Reducer.mean(),
-  geometry: roi3,
-  scale: 250,
-  maxPixels: 1e13
-});
+print('Fire counts by year:', fireCountCollection);
 
-var meanNdviRoi4 = collection.mean().reduceRegion({
-  reducer: ee.Reducer.mean(),
-  geometry: roi4,
-  scale: 250,
-  maxPixels: 1e13
-});
+var chart = ui.Chart.feature.byFeature(fireCountCollection, 'year', 'fire_count')
+  .setChartType('ColumnChart')
+  .setOptions({
+    title: 'Fire Frequency by Year',
+    hAxis: {title: 'Year'},
+    vAxis: {title: 'Number of Fires'},
+    legend: 'none',
+  });
 
-var meanNdviRoi5 = collection.mean().reduceRegion({
-  reducer: ee.Reducer.mean(),
-  geometry: roi5,
-  scale: 250,
-  maxPixels: 1e13
-});
-
-print('Mean NDVI for ROI1:', meanNdviRoi1);
-print('Mean NDVI for ROI2:', meanNdviRoi2);
-print('Mean NDVI for ROI3:', meanNdviRoi3);
-print('Mean NDVI for ROI4:', meanNdviRoi4);
-print('Mean NDVI for ROI5:', meanNdviRoi5);
+print(chart);
