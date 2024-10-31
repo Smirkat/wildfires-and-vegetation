@@ -1,0 +1,18 @@
+var pixelAreaImage = ee.Image.pixelArea();
+
+var maskedAreaImage = pixelAreaImage.clip(aoi);
+
+var totalArea = maskedAreaImage.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: aoi,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+var totalAreaInSqKm = ee.Number(totalArea.get('pixel_area')).divide(1e6);
+
+print('Total Area in square meters:', totalArea.get('pixel_area'));
+print('Total Area in square kilometers:', totalAreaInSqKm);
+
+Map.centerObject(aoi, 8);
+Map.addLayer(aoi, {color: 'blue'}, 'Area of Interest');
