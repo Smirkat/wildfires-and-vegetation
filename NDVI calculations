@@ -1,4 +1,4 @@
-var collection = ee.ImageCollection('MODIS/061/MOD13Q1')
+var collection = ee.ImageCollection('MODIS/061/MOD13Q1') // using modis ndvi
   .filterDate('2016-10-01', '2016-10-16')
   .select(['NDVI']);
 
